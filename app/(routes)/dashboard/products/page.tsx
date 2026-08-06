@@ -77,10 +77,16 @@ export default function ProductsPage() {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const response = await axios.get(`${baseURL}/products`, {
-                withCredentials: true,
-            });
-            setProducts(response.data.data.products);
+            try {
+                const response = await axios.get(`${baseURL}/products`, {
+                    withCredentials: true,
+                });
+                setProducts(response.data.data.items);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setSubmitting(false);
+            }
         };
 
         const fetchCategories = async () => {
