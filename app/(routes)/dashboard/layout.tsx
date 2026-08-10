@@ -1,10 +1,26 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from '@/components/ui/sidebar';
 import Topbar from '@/components/ui/topbar';
+import { useAuth } from '@/context/AuthContext';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user) {
+      // Stale cookie: clear it so middleware can redirect next time
+      void fetch("/api/auth/logout", { method: "POST", credentials: "include" }).finally(() => {
+        window.location.replace("/signin");
+      });
+    }
+  }, [loading, user]);
+
+  if (loading || !user) {
+    return null;
+  }
 
   return (
     <div className="dash-shell flex min-h-dvh">

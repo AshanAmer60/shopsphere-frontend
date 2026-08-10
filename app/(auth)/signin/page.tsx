@@ -30,20 +30,17 @@ const SigninPage = () => {
 
             const response = await axios.post(`${backendUrl}/auth/login`, formData, { withCredentials: true });
             if (response.status === 200) {
+                const user = response.data.data.user as User;
+                setUser(user);
                 toast.success(response.data.message as string);
-                console.log(response.data.data.user.role);
-                if (response.data.data.user.role === 'admin') {
-                    router.push('/dashboard');
-                } else {
-                    setUser(response.data.data.user as unknown as User);
-                    router.push('/');
-                }
+                router.push(user.role === 'admin' ? '/dashboard' : '/');
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                toast.error(error.response?.data.message as string);
+                toast.error((error.response?.data?.message as string) || error.message);
+            } else {
+                toast.error((error as Error).message);
             }
-            toast.error((error as Error).message);
         }
     };
     return (
@@ -67,7 +64,7 @@ const SigninPage = () => {
                 >
                     Welcome back
                 </h1>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
                         <label className="auth-label" htmlFor="email">Email</label>
                         <input

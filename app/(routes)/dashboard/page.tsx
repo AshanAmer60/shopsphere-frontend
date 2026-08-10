@@ -1,8 +1,9 @@
-'use client';
-    export default function DashboardPage() {
+export default function DashboardPage() {
     return (
-        <div>
-            <h1>Dashboard</h1>
+        <div className="flex flex-col items-center justify-center h-screen">
+            <h1 className="text-4xl font-bold">Dashboard</h1>
+            <p className="text-sm text-gray-500">Welcome to the dashboard</p>
+
         </div>
     );
 }

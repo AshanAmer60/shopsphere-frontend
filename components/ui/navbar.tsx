@@ -2,27 +2,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
 
-  const { user, loading, setUser } = useAuth();
+  const { user, loading, logout: authLogout } = useAuth();
   const router = useRouter();
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-
   const logout = async () => {
-    await axios.post(`${backendUrl}/auth/logout`, {}, { withCredentials: true });
-    router.push('/');
-    console.log('Logged out successfully');
-    setUser(null);
-  }
+    await authLogout();
+    router.push("/");
+  };
 
   return (
     <header className="flex items-center justify-between gap-4">

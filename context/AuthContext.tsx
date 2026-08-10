@@ -36,6 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             try {
                 const res = await axios.get(`${backendUrl}/auth/me`, {
                     withCredentials: true,
+                    timeout: 5000,
                 });
                 setUser(res.data.data);
             } catch {
@@ -49,11 +50,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const logout = useCallback(async () => {
         try {
-            await axios.post(`${backendUrl}/auth/logout`, {}, { withCredentials: true });
+            // Clear cookies on the Next origin (middleware reads these)
+            await axios.post("/api/auth/logout", {}, { withCredentials: true });
         } finally {
             setUser(null);
         }
-    }, [backendUrl]);
+    }, []);
 
     const value = useMemo(
         () => ({ user, loading, setUser, logout }),

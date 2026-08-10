@@ -1,7 +1,5 @@
 'use client';
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import { MdDashboard } from "react-icons/md";
 import { GoPackage } from "react-icons/go";
@@ -9,6 +7,7 @@ import { MdCategory } from "react-icons/md";
 import { MdReceiptLong } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
 import Image from "next/image";
+import { useAuth } from "@/context/AuthContext";
 
 function CloseIcon() {
     return (
@@ -32,28 +31,14 @@ const NAV_ITEMS = [
 ] as const;
 
 export default function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
-    const [user, setUser] = useState<{
-        name?: string;
-        email?: string;
-        role?: string;
-    } | null>(null);
+    const { user, logout } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`${backendUrl}/auth/me`, {
-                    withCredentials: true,
-                });
-                setUser(response.data.data);
-            } catch {
-                router.replace("/signin");
-            }
-        };
-        fetchData();
-    }, [backendUrl, router]);
+    const handleLogout = async () => {
+        await logout();
+        router.replace("/signin");
+    };
 
     return (
         <aside
@@ -124,7 +109,7 @@ export default function Sidebar({ open, onClose }: { open: boolean; onClose: () 
                 </div>
                 <button
                     type="button"
-                    onClick={() => router.replace("/signin")}
+                    onClick={handleLogout}
                     className="mt-4 w-full cursor-pointer border border-[var(--brand)]/15 px-3 py-2 text-sm font-medium text-[var(--brand)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
                 >
                     Log out

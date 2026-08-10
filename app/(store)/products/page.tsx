@@ -1,12 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Image from "next/image";
-import Link from "next/link";
-
 export default function ProductsPage() {
     const [products, setProducts] = useState<any[]>([]);
     const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -23,7 +21,7 @@ export default function ProductsPage() {
         fetchProducts();
     }, [baseURL]);
 
-
+    const filteredProducts = products.filter((product: any) => product.name.toLowerCase().includes(search.toLowerCase()));
 
     return (
         <div className="mx-auto w-full max-w-6xl px-6 py-10 sm:px-10 sm:py-14">
@@ -53,13 +51,15 @@ export default function ProductsPage() {
                             id="search"
                             placeholder="Search products…"
                             className="w-full border border-[var(--field-border)] bg-white/90 px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[#8a9691] outline-none transition focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_rgba(13,115,119,0.15)]"
+                            onChange={(e) => setSearch(e.target.value)}
+                            value={search}
                         />
                     </label>
                 </div>
             </section>
 
             <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                {products.map((product: any) => {
+                {filteredProducts.map((product: any) => {
                     const hasDiscount = product.discount > 0;
                     const finalPrice = hasDiscount
                         ? product.price * (1 - product.discount / 100)
