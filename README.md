@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ShopSphere
 
-## Getting Started
+Frontend for an e-commerce store: a public catalog for customers and a protected admin dashboard for inventory.
 
-First, run the development server:
+Built with **Next.js**, **TypeScript**, and **Tailwind CSS**. Talks to a REST backend over cookie-based auth.
+
+## Features
+
+- Storefront: product grid, live search, sale pricing
+- Auth: sign up, sign in, session restore, logout (`customer` / `admin`)
+- Route protection: Next.js middleware gates `/dashboard` on an `accessToken` cookie
+- Admin: create and manage products and categories (images, stock, discounts)
+
+## Stack
+
+| | |
+|---|---|
+| Framework | Next.js (App Router), React 19 |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Data | Axios + cookie credentials |
+| Tests | Vitest, React Testing Library |
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create a `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+NEXT_PUBLIC_BACKEND_URL=http://localhost:4000/api/v1
+BACKEND_URL=http://localhost:4000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Then:
 
-## Learn More
+```bash
+npm run dev          # http://localhost:3000
+npm run test:run     # product listing + search tests
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The API is expected at `http://localhost:4000` (rewritten via `/api/v1`).
