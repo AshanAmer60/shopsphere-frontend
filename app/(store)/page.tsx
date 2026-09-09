@@ -1,6 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { FaArrowRight } from "react-icons/fa";
+import ShopByCategory from "@/components/sections/shopByCategory";
+import ModernLiving from "@/components/sections/modernLiving";
+
 export default function Home() {
   const { loading } = useAuth();
   if (loading) {
@@ -45,9 +49,15 @@ export default function Home() {
             <div className="home-rise-delay-2 mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/signup"
-                className="bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-hover)]"
+                className="bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-hover)] flex items-center gap-2"
               >
-                Get Started
+                Get Started <FaArrowRight className="w-4 h-4" />
+              </Link>
+
+              <Link href="/products"
+              className="bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-hover)] flex items-center gap-2"
+              >
+                Shop Products <FaArrowRight className="w-4 h-4" />
               </Link>
 
             </div>
@@ -55,21 +65,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-t border-[var(--brand)]/10 bg-[#eef3f0] px-6 py-20 sm:px-10">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2
-            className="text-3xl tracking-tight text-[var(--brand)] sm:text-4xl"
-            style={{ fontFamily: "var(--font-display), Georgia, serif" }}
-          >
-            Built for modern living
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[var(--muted)] leading-relaxed">
-            ShopSphere brings together products, secure checkout, and a personal
-            account experience—so finding what you need feels simple from the
-            first visit.
-          </p>
-        </div>
-      </section>
+      <ModernLiving />
+
+      <ShopByCategory />
     </main>
   );
 }

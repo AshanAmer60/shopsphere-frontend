@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import products from "@/components/ui/addProductModel";
 
 const emptyForm = {
     name: "",
@@ -23,7 +24,7 @@ export default function ProductsPage() {
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState(emptyForm);
     const [submitting, setSubmitting] = useState(false);
-
+    setProducts(products);
     const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const resetForm = () => setFormData(emptyForm);
@@ -76,18 +77,7 @@ export default function ProductsPage() {
     };
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await axios.get(`${baseURL}/products`, {
-                    withCredentials: true,
-                });
-                setProducts(response.data.data.items);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setSubmitting(false);
-            }
-        };
+        
 
         const fetchCategories = async () => {
             const response = await axios.get(`${baseURL}/categories`, {
@@ -96,7 +86,6 @@ export default function ProductsPage() {
             setCategories(response.data.data);
         };
 
-        fetchProducts();
         fetchCategories();
     }, [baseURL]);
 
