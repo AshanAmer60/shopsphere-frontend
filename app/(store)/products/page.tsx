@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Link from "next/link";
+
 export default function ProductsPage() {
     const [products, setProducts] = useState<any[]>([]);
     const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -58,7 +60,7 @@ export default function ProductsPage() {
                 </div>
             </section>
 
-            <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3"  >
                 {filteredProducts.map((product: any) => {
                     const hasDiscount = product.discount > 0;
                     const finalPrice = hasDiscount
@@ -66,8 +68,9 @@ export default function ProductsPage() {
                         : product.price;
 
                     return (
-                        <article
+                        <Link
                             key={product._id}
+                            href={`/products/${product.slug}`}
                             className="overflow-hidden rounded-xl border border-[var(--field-border)] bg-[var(--surface)] shadow-[0_1px_2px_rgba(20,35,31,0.04)] backdrop-blur-sm transition hover:border-[var(--accent)]/35 hover:shadow-[0_8px_24px_rgba(20,61,53,0.08)]"
                         >
                             <div className="relative aspect-[16/10] overflow-hidden bg-[rgba(20,61,53,0.06)]">
@@ -134,7 +137,7 @@ export default function ProductsPage() {
                                     </span>
                                 </div>
                             </div>
-                        </article>
+                        </Link>
                     );
                 })}
             </div>

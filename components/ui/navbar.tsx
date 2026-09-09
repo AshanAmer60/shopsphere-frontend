@@ -1,26 +1,49 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
-
   const { user, loading, logout: authLogout } = useAuth();
   const router = useRouter();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const logout = async () => {
+    setMenuOpen(false);
     await authLogout();
     router.push("/");
   };
 
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const onPointerDown = (event: MouseEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [menuOpen]);
+
+  const initials = user?.name?.trim()?.charAt(0).toUpperCase() ?? "?";
+
   return (
     <header className="flex items-center justify-between gap-4">
-      <Link href="/" className="flex items-center gap-3 min-w-0">
+      <Link href="/" className="flex min-w-0 items-center gap-3">
         <Image
           src="/logo.png"
           alt="ShopSphere"
@@ -45,18 +68,40 @@ export default function Navbar() {
       </nav>
 
       <div className="flex items-center gap-3 text-sm text-white/85">
-        {user && user.role === 'customer' ? (
-          <>
-            <span className="transition hover:text-white">
-              {user.name}
-            </span>
+        {loading ? (
+          <div className="h-9 w-9 animate-pulse rounded-full bg-white/20" aria-hidden />
+        ) : user ? (
+          <div className="relative" ref={menuRef}>
             <button
-              onClick={logout}
-              className="transition hover:text-white cursor-pointer"
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              aria-label="Open profile menu"
+              onClick={() => setMenuOpen((open) => !open)}
+              className="grid h-9 w-9 cursor-pointer place-items-center rounded-full bg-white text-sm font-semibold text-[var(--brand)] transition hover:bg-white/90"
             >
-              Logout
+              {initials}
             </button>
-          </>
+
+            {menuOpen && (
+              <div
+                role="menu"
+                className="absolute right-0 z-50 mt-2 w-48 overflow-hidden rounded-xl border border-[var(--field-border)] bg-white py-1 shadow-[0_12px_32px_rgba(20,61,53,0.16)]"
+              >
+                <p className="truncate px-3 py-2.5 text-sm font-semibold text-[var(--brand)]">
+                  {user.name}
+                </p>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={logout}
+                  className="w-full cursor-pointer border-t border-[var(--field-border)] px-3 py-2.5 text-left text-sm font-medium text-[var(--brand)] transition hover:bg-[rgba(13,115,119,0.08)] hover:text-[var(--accent)]"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
           <>
             <Link href="/signin" className="transition hover:text-white">

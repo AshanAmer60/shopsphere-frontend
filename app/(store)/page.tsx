@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { FaArrowRight } from "react-icons/fa";
 import ShopByCategory from "@/components/sections/shopByCategory";
-import ModernLiving from "@/components/sections/modernLiving";
 
 export default function Home() {
   const { loading } = useAuth();
@@ -64,8 +63,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <ModernLiving />
 
       <ShopByCategory />
     </main>
